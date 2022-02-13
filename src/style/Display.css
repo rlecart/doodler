@@ -1,0 +1,5 @@
+.display {
+  width: 50vh !important;
+  min-width: 50vh;
+  height: 100vh;
+}
