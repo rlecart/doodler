@@ -1,0 +1,15 @@
+.scoreBoard {
+	flex: 1;
+	background: #3b414d;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+p.score {
+	color: #c26c51;
+	font-family: Readex Pro;
+	font-weight: 100;
+	font-size: 32pt;
+	margin: 0;
+}

@@ -1,5 +1,9 @@
 .display {
-  width: 50vh !important;
-  min-width: 50vh;
+  width: 55vh !important;
+  min-width: 55vh;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 2%;
 }
