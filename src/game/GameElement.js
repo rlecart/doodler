@@ -2,10 +2,11 @@ class GameElement {
   constructor(type) {
     this._type = type;
     this._list = [];
+    this.newOne();
   }
 
   newOne(y, x) {
-    if (y !== undefined)
+    if (y === undefined && this._list.length > 0)
       y = this._list[this._list.length - 1].y;
     this._list.push(new this._type(x, y));
   }

@@ -19,7 +19,6 @@ class GameObject {
       ...this._toBeDisplayed,
       'trays': new GameElement(Tray)
     };
-    this._toBeDisplayed.trays.newOne();
   }
 
   start() {
@@ -30,8 +29,8 @@ class GameObject {
   startInterval() {
     this._interval = setInterval(() => {
       this.render();
-      this._toBeDisplayed.trays.newOne(0, -1);
-      console.log('omg');
+      this._toBeDisplayed['trays'].newOne();
+      console.log('interval render', this._framesCounter);
     }, FPS60);
   }
 

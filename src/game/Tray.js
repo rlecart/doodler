@@ -1,4 +1,4 @@
-const { SIZE } = require("./options/options");
+const { SIZE, COLORS } = require("./options/options");
 
 class Tray {
   constructor(x, lastY) {
@@ -38,7 +38,7 @@ class Tray {
   render(canvas, ctx) {
     const startX = (canvas.width / 2) + this._x - (this._lengthX / 2);
     const startY = canvas.height - this._y - (this._lengthY / 2);
-    ctx.fillStyle = '#43A765';
+    ctx.fillStyle = COLORS['trays'];
     ctx.fillRect(startX, startY, this._lengthX, this._lengthY);
     ctx.beginPath();
     ctx.arc(startX, startY + (this._lengthY / 2), this._lengthY / 2, 0, 2 * Math.PI, false);

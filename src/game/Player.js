@@ -1,38 +1,19 @@
 const { SIZE } = require("./options/options");
 
 class Player {
-  constructor(x, lastY) {
-    if (lastY === undefined)
-      lastY = 0;
-    if (x === undefined)
-      x = 0;
+  constructor() {
     this._lengthX = 300;
     this._lengthY = 45;
-    this._x = x + this.generateNewRangeX();
-    this._y = lastY + this.generateNewRangeY();
+    this._x = 0;
+    this._y = 0;
   }
 
   get y() {
     return (this._y);
   }
 
-  generateNewRangeY() {
-    const minimum = this._lengthY * 5;
-    const add = Math.floor(Math.random() * this._lengthY * 2) + minimum;
-    return (add);
-  }
-
-  generateNewRangeX() {
-    const direction = Math.floor(Math.random() * 2);
-    console.log(direction);
-    const add = Math.floor(Math.random() * ((SIZE.width / 2) - ((this._lengthX + this._lengthY) / 2)));
-
-    if (direction === 0) {
-      return (-add);
-    }
-    else if (direction === 1) {
-      return (add);
-    }
+  get x() {
+    return (this._x);
   }
 
   render(canvas, ctx) {
