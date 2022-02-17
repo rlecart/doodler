@@ -1,13 +1,15 @@
-import '../style/ScoreBoard.css'
+import '../style/ScoreBoard.css';
 
 import { Fragment } from "react";
 
-const ScoreBoard = ({ score }) => {
+const ScoreBoard = ({ score, isInGame, setInGame }) => {
   return (
     <Fragment>
-      <div className="scoreBoard">
-        <p className="score">Score : {score}</p>
-      </div>
+      <button className="scoreBoard" disabled={isInGame} onClick={() => setInGame(true)}>
+        <p className="score">
+          {isInGame ? `Score : ${score}` : `START`}
+        </p>
+      </button>
     </Fragment>
   );
 };
