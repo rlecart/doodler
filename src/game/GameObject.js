@@ -1,6 +1,7 @@
 const { FPS60 } = require("./options/options");
 const GameElement = require("./GameElement");
 const Tray = require("./Tray");
+const Player = require("./Player");
 
 class GameObject {
   constructor() {
@@ -17,7 +18,8 @@ class GameObject {
     this._ctx = this._canvas.getContext('2d');
     this._toBeDisplayed = {
       ...this._toBeDisplayed,
-      'trays': new GameElement(Tray)
+      'trays': new GameElement(Tray),
+      'player': new GameElement(Player),
     };
   }
 
