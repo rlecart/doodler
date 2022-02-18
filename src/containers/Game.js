@@ -13,12 +13,20 @@ const Game = ({
 
   React.useEffect(() => {
     g.current = new GameObject();
+    window.addEventListener('keydown', e => {
+      if (e.key === ' ')
+        g.current.jump();
+    });
   }, []);
 
   React.useEffect(() => {
     console.log('yo');
     if (isInGame)
-      g.current.start();
+      g.current.startInterval();
+    else {
+      g.current.init();
+      g.current.loop();
+    }
   }, [isInGame]);
 
   return (

@@ -10,6 +10,11 @@ class Tray {
     this._lengthY = 45;
     this._x = x + this.generateNewRangeX();
     this._y = lastY + this.generateNewRangeY();
+    this._translationY = 0;
+  }
+
+  set translationY(value) {
+    this._translationY = value;
   }
 
   get y() {
@@ -37,7 +42,7 @@ class Tray {
 
   render(canvas, ctx) {
     const startX = (canvas.width / 2) + this._x - (this._lengthX / 2);
-    const startY = canvas.height - this._y - (this._lengthY / 2);
+    const startY = canvas.height - this._y - this._translationY - (this._lengthY / 2);
     ctx.fillStyle = COLORS['trays'];
     ctx.fillRect(startX, startY, this._lengthX, this._lengthY);
     ctx.beginPath();

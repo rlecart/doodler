@@ -5,6 +5,10 @@ class GameElement {
     this.newOne();
   }
 
+  get list() {
+    return (this._list);
+  }
+
   newOne(y, x) {
     if (y === undefined && this._list.length > 0)
       y = this._list[this._list.length - 1].y;

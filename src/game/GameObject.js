@@ -11,6 +11,15 @@ class GameObject {
     this._toBeDisplayed = {};
     this._fps = 0;
     this._framesCounter = 0;
+    this._physics = {
+      posX: 0,
+      posY: 0,
+      velocityY: -27.0,
+      gravity: 0.7,
+      onGround: false,
+      momentum: 175,
+    };
+    this._firstJump = true;
   }
 
   init() {
@@ -21,6 +30,13 @@ class GameObject {
       'trays': new GameElement(Tray),
       'player': new GameElement(Player),
     };
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
   }
 
   start() {
@@ -28,12 +44,14 @@ class GameObject {
     this.startInterval();
   }
 
+  loop() {
+    this.update();
+    this.render();
+    console.log('interval render', this._framesCounter);
+  }
+
   startInterval() {
-    this._interval = setInterval(() => {
-      this.render();
-      this._toBeDisplayed['trays'].newOne();
-      console.log('interval render', this._framesCounter);
-    }, FPS60);
+    this._interval = setInterval(() => this.loop(), FPS60);
   }
 
   resetInterval() {
@@ -41,10 +59,38 @@ class GameObject {
     this.startInterval();
   }
 
+  jump() {
+    // if (this._physics.onGround) {
+    this._physics.velocityY = -27.0;
+    this._physics.onGround = false;
+    // }
+  }
+
+  update() {
+    this._physics.velocityY += this._physics.gravity;
+    this._physics.posY += this._physics.velocityY;
+
+    if (this._physics.posY > this._physics.momentum) {
+      this._physics.posY = this._physics.momentum;
+      this._physics.velocityY = 0.0;
+      this._physics.onGround = true;
+      this._firstJump = false;
+      console.log('c cui');
+    }
+    Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
+      // if (key !== 'player') {
+        if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
+        value.list.forEach(e => {
+          e.translationY = this._physics.posY;
+        });
+      }
+    });
+  }
+
   render() {
     this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
     if (Object.values(this._toBeDisplayed).length !== 0) {
-      console.log(this._framesCounter);
+      // this._toBeDisplayed['trays'].list.forEach(e => e.y--);
       Object.values(this._toBeDisplayed).forEach(e => e.render(this._canvas, this._ctx));
     }
     this._framesCounter++;

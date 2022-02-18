@@ -1,4 +1,4 @@
-const FPS60 = 50000 / 60;
+const FPS60 = 1000 / 60;
 
 const SIZE = {
   width: 1000,
