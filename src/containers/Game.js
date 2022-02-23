@@ -10,14 +10,25 @@ const Game = ({
   setInGame,
 }) => {
   const g = React.useRef();
+  const isPressed = React.useRef({});
 
   React.useEffect(() => {
     g.current = new GameObject();
     window.addEventListener('keydown', e => {
-      if (e.key === ' ')
-        g.current.jump();
-      else if (e.key === 'e')
-        g.current.stop();
+      if (!isPressed.current[e.key]) {
+        isPressed.current = { ...isPressed.current, [e.key]: true };
+        console.log(e.key);
+        if (e.key === ' ')
+          g.current.jump();
+        else if (e.key === 'e')
+          g.current.stop();
+      }
+    });
+    window.addEventListener('keyup', e => {
+      if (isPressed.current[e.key]) {
+        isPressed.current = { ...isPressed.current, [e.key]: false };
+        console.log('aaaaa', e.key);
+      }
     });
   }, []);
 

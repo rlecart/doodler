@@ -14,6 +14,7 @@ class GameObject {
     this._physics = {
       posX: 0,
       posY: 0,
+      velocityX: 0.0,
       velocityY: -27.0,
       gravity: 0.7,
       onGround: false,
@@ -72,6 +73,8 @@ class GameObject {
     // }
   }
 
+
+
   update() {
     this._physics.velocityY += this._physics.gravity;
     this._physics.posY += this._physics.velocityY;
@@ -83,7 +86,7 @@ class GameObject {
       this._firstJump = false;
     }
     if (this._physics.posY > this._physics.momentum) {
-      console.log('ground')
+      // console.log('ground')
       this._physics.posY = this._physics.momentum;
       this._physics.velocityY = 0.0;
       this._physics.onGround = true;
@@ -101,14 +104,14 @@ class GameObject {
     this._toBeDisplayed['trays'].list.forEach((e, i) => {
       // if (i === 0) {
         const player = this._toBeDisplayed['player'].list[0];
-        console.log('\n[player] realPos');
-        console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
-        console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
-        console.log(`translationY: ${player._translationY}`);
-        console.log('[tray] realPos');
-        console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
-        console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
-        console.log('\n');
+        // console.log('\n[player] realPos');
+        // console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
+        // console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
+        // console.log(`translationY: ${player._translationY}`);
+        // console.log('[tray] realPos');
+        // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
+        // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
+        // console.log('\n');
         if (this._physics.velocityY > 0.0
           && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
           && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._lengthY - 10)) {
