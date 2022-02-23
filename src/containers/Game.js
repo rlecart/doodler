@@ -20,14 +20,18 @@ const Game = ({
         console.log(e.key);
         if (e.key === ' ')
           g.current.jump();
-        else if (e.key === 'e')
-          g.current.stop();
+        if (e.key === 'ArrowLeft'
+          || e.key === 'ArrowRight')
+          g.current.startMove(e.key);
       }
     });
     window.addEventListener('keyup', e => {
       if (isPressed.current[e.key]) {
         isPressed.current = { ...isPressed.current, [e.key]: false };
         console.log('aaaaa', e.key);
+        if (e.key === 'ArrowLeft'
+          || e.key === 'ArrowRight')
+          g.current.stopMove(e.key);
       }
     });
   }, []);

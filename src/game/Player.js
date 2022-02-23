@@ -2,17 +2,24 @@ const { SIZE, COLORS } = require("./options/options");
 
 class Player {
   constructor() {
-    this._lengthX = 110;
-    this._lengthY = 55;
+    this._length = {
+      x: 110,
+      y: 55,
+    };
     this._x = 0;
-    this._y = this._lengthY / 2;
-    this._translationY = 0;
+    this._y = this._length.y / 2;
+    this._translation = {
+      x: 0,
+      y: 0,
+    };
   }
 
-  set translationY(value) {
-    this._translationY = value;
+  set translation(value) {
+    this._translation = { ...this._translation, ...value };
   }
-
+  get translation() {
+    return (this._translation);
+  }
   get y() {
     return (this._y);
   }
@@ -23,20 +30,20 @@ class Player {
 
   get realPos() {
     return ({
-      x: (SIZE.width / 2) + this._x - (this._lengthX / 2),
-      y: (SIZE.height - (this._y - this._translationY) - (this._lengthY / 2)),
-      xMax: (SIZE.width / 2) + this._x + (this._lengthX / 2),
-      yMax: (SIZE.height - (this._y - this._translationY) + (this._lengthY / 2)),
+      x: (SIZE.width / 2) + this._x - (this._length.x / 2),
+      y: (SIZE.height - (this._y - this._translation.y) - (this._length.y / 2)),
+      xMax: (SIZE.width / 2) + this._x + (this._length.x / 2),
+      yMax: (SIZE.height - (this._y - this._translation.y) + (this._length.y / 2)),
     });
   }
 
   render(canvas, ctx) {
-    const startX = (canvas.width / 2) + this._x - (this._lengthX / 2);
-    const startY = canvas.height - (this._y - this._translationY) - (this._lengthY / 2);
+    const startX = (canvas.width / 2) + this._x - (this._length.x / 2);
+    const startY = canvas.height - (this._y - this._translation.y) - (this._length.y / 2);
     ctx.fillStyle = COLORS['player'];
-    ctx.fillRect(startX, startY, this._lengthX, this._lengthY);
+    ctx.fillRect(startX, startY, this._length.x, this._length.y);
     ctx.beginPath();
-    ctx.arc(startX + (this._lengthX / 2), startY, this._lengthX / 2, 0, 2 * Math.PI, false);
+    ctx.arc(startX + (this._length.x / 2), startY, this._length.x / 2, 0, 2 * Math.PI, false);
     ctx.fill();
   }
 }
