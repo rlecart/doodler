@@ -16,6 +16,8 @@ const Game = ({
     window.addEventListener('keydown', e => {
       if (e.key === ' ')
         g.current.jump();
+      else if (e.key === 'e')
+        g.current.stop();
     });
   }, []);
 

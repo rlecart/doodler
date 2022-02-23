@@ -21,6 +21,15 @@ class Player {
     return (this._x);
   }
 
+  get realPos() {
+    return ({
+      x: (SIZE.width / 2) + this._x - (this._lengthX / 2),
+      y: (SIZE.height - (this._y - this._translationY) - (this._lengthY / 2)),
+      xMax: (SIZE.width / 2) + this._x + (this._lengthX / 2),
+      yMax: (SIZE.height - (this._y - this._translationY) + (this._lengthY / 2)),
+    });
+  }
+
   render(canvas, ctx) {
     const startX = (canvas.width / 2) + this._x - (this._lengthX / 2);
     const startY = canvas.height - (this._y - this._translationY) - (this._lengthY / 2);

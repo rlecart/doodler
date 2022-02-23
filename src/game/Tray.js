@@ -21,6 +21,15 @@ class Tray {
     return (this._y);
   }
 
+  get realPos() {
+    return ({
+      x: (SIZE.width / 2) + this._x - (this._lengthX / 2) - (this._lengthY / 2),
+      y: SIZE.height - this._y - this._translationY - (this._lengthY / 2),
+      xMax: (SIZE.width / 2) + this._x + (this._lengthX / 2) + (this._lengthY / 2),
+      yMax: SIZE.height - this._y - this._translationY + (this._lengthY / 2),
+    });
+  }
+
   generateNewRangeY() {
     const minimum = this._lengthY * 5;
     const add = Math.floor(Math.random() * this._lengthY * 2) + minimum;

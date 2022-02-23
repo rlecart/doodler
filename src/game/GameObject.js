@@ -44,10 +44,14 @@ class GameObject {
     this.startInterval();
   }
 
+  stop() {
+    clearInterval(this._interval);
+  }
+
   loop() {
     this.update();
     this.render();
-    console.log('interval render', this._framesCounter);
+    // console.log('interval render', this._framesCounter);
   }
 
   startInterval() {
@@ -61,6 +65,8 @@ class GameObject {
 
   jump() {
     // if (this._physics.onGround) {
+    console.log('jump');
+    this._physics.momentum = this._physics.posY + 100;
     this._physics.velocityY = -27.0;
     this._physics.onGround = false;
     // }
@@ -70,20 +76,46 @@ class GameObject {
     this._physics.velocityY += this._physics.gravity;
     this._physics.posY += this._physics.velocityY;
 
+    if (this._physics.velocityY >= -10.0 && this._firstJump) {
+      // console.log('couciu');
+      this._toBeDisplayed['player'].list[0].translationY = this._physics.posY;
+      this._physics.posY = 0;
+      this._firstJump = false;
+    }
     if (this._physics.posY > this._physics.momentum) {
+      console.log('ground')
       this._physics.posY = this._physics.momentum;
       this._physics.velocityY = 0.0;
       this._physics.onGround = true;
       this._firstJump = false;
-      console.log('c cui');
+      // console.log('c cui');
     }
     Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
       // if (key !== 'player') {
-        if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
+      if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
         value.list.forEach(e => {
           e.translationY = this._physics.posY;
         });
       }
+    });
+    this._toBeDisplayed['trays'].list.forEach((e, i) => {
+      // if (i === 0) {
+        const player = this._toBeDisplayed['player'].list[0];
+        console.log('\n[player] realPos');
+        console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
+        console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
+        console.log(`translationY: ${player._translationY}`);
+        console.log('[tray] realPos');
+        console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
+        console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
+        console.log('\n');
+        if (this._physics.velocityY > 0.0
+          && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
+          && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._lengthY - 10)) {
+          console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
+          this.jump();
+        }
+      // }
     });
   }
 
