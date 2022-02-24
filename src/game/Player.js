@@ -30,15 +30,15 @@ class Player {
 
   get realPos() {
     return ({
-      x: (SIZE.width / 2) + this._x - (this._length.x / 2),
+      x: (SIZE.width / 2) + (this._x + this._translation.x) - (this._length.x / 2),
       y: (SIZE.height - (this._y - this._translation.y) - (this._length.y / 2)),
-      xMax: (SIZE.width / 2) + this._x + (this._length.x / 2),
+      xMax: (SIZE.width / 2) + (this._x + this._translation.x) + (this._length.x / 2),
       yMax: (SIZE.height - (this._y - this._translation.y) + (this._length.y / 2)),
     });
   }
 
   render(canvas, ctx) {
-    const startX = (canvas.width / 2) + this._x - (this._length.x / 2);
+    const startX = (canvas.width / 2) + (this._x + this._translation.x) - (this._length.x / 2);
     const startY = canvas.height - (this._y - this._translation.y) - (this._length.y / 2);
     ctx.fillStyle = COLORS['player'];
     ctx.fillRect(startX, startY, this._length.x, this._length.y);

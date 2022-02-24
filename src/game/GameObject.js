@@ -20,11 +20,18 @@ class GameObject {
         x: 0.0,
         y: -27.0,
       },
-      gravity: 0.7,
+      gravity: {
+        x: 0.65,
+        y: 0.7,
+      },
       onGround: false,
       momentum: 175,
     };
     this._firstJump = true;
+    this._move = {
+      keyPressed: {},
+      dir: '',
+    };
   }
 
   init() {
@@ -35,6 +42,75 @@ class GameObject {
       'trays': new GameElement(Tray),
       'player': new GameElement(Player),
     };
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
@@ -78,12 +154,61 @@ class GameObject {
   }
 
   startMove(key) {
-    this._move = { ...this._move, [key]: true };
+    this._move.keyPressed = { ...this._move.keyPressed, [key]: true };
+    this.changeDir();
+  }
+
+  stopMove(key) {
+    this._move.keyPressed = { ...this._move.keyPressed, [key]: false };
+    this.changeDir();
+  }
+
+  changeDir() {
+    if (this._move.keyPressed['ArrowLeft'] && this._move.keyPressed['ArrowRight'])
+      this._move.dir = '';
+    else if (this._move.keyPressed['ArrowLeft']) {
+      this._move.dir = 'left';
+      if (this._physics.velocity.x - 2.0 < 2.0 && this._physics.velocity.x - 2.0 >= -2.0)
+        this._physics.velocity.x = -2.0;
+    }
+    else if (this._move.keyPressed['ArrowRight']) {
+      this._move.dir = 'right';
+      if (this._physics.velocity.x + 2.0 > 2.0 && this._physics.velocity.x + 2.0 <= 2.0)
+        this._physics.velocity.x = 2.0;
+    }
+    else
+      this._move.dir = '';
   }
 
   update() {
-    this._physics.velocity.y += this._physics.gravity;
+    this._physics.velocity.y += this._physics.gravity.y;
     this._physics.pos.y += this._physics.velocity.y;
+
+    if (this._move.dir === 'left') {
+      // console.log('left', this._physics);
+      if (this._physics.velocity.x > -20.0)
+        this._physics.velocity.x -= this._physics.gravity.x;
+      this._physics.pos.x += this._physics.velocity.x;
+    }
+    else if (this._move.dir === 'right') {
+      // console.log('right', this._physics);
+      if (this._physics.velocity.x <= 20.0)
+        this._physics.velocity.x += this._physics.gravity.x;
+      this._physics.pos.x += this._physics.velocity.x;
+    }
+    else if (this._move.dir === '') {
+      if (this._physics.velocity.x < 0) {
+        this._physics.velocity.x += this._physics.gravity.x / 2.5;
+        if (this._physics.velocity.x >= 0)
+          this._physics.velocity.x = 0.0;
+      }
+      if (this._physics.velocity.x > 0) {
+        this._physics.velocity.x -= this._physics.gravity.x / 2.5;
+        if (this._physics.velocity.x <= 0)
+          this._physics.velocity.x = 0.0;
+      }
+      this._physics.pos.x += this._physics.velocity.x;
+    }
 
     if (this._physics.velocity.y >= -10.0 && this._firstJump) {
       // console.log('couciu');
@@ -106,6 +231,8 @@ class GameObject {
           e.translation.y = this._physics.pos.y;
         });
       }
+      if (key === 'player')
+        value.list[0].translation.x = this._physics.pos.x;
     });
     this._toBeDisplayed['trays'].list.forEach((e, i) => {
       // if (i === 0) {
