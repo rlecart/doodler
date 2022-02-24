@@ -211,6 +211,10 @@ class GameObject {
       }
       this._physics.pos.x += this._physics.velocity.x;
     }
+    if (this._physics.pos.x > SIZE.width / 2)
+      this._physics.pos.x = -SIZE.width / 2;
+    else if (this._physics.pos.x < -SIZE.width / 2)
+      this._physics.pos.x = SIZE.width / 2;
 
     if (this._physics.velocity.y >= -10.0 && this._firstJump) {
       // console.log('couciu');
@@ -252,7 +256,7 @@ class GameObject {
           && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._length.y - 10)) {
           console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
           this.jump();
-          return ;
+          return;
         }
       });
       // }
