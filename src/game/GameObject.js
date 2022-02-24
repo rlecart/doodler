@@ -1,4 +1,4 @@
-const { FPS60 } = require("./options/options");
+const { FPS60, SIZE } = require("./options/options");
 const GameElement = require("./GameElement");
 const Tray = require("./Tray");
 const Player = require("./Player");
@@ -42,6 +42,8 @@ class GameObject {
       'trays': new GameElement(Tray),
       'player': new GameElement(Player),
     };
+    this._toBeDisplayed['player'].newOne(0, -SIZE.width);
+    this._toBeDisplayed['player'].newOne(0, SIZE.width);
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
@@ -212,7 +214,7 @@ class GameObject {
 
     if (this._physics.velocity.y >= -10.0 && this._firstJump) {
       // console.log('couciu');
-      this._toBeDisplayed['player'].list[0].translation.y = this._physics.pos.y;
+      this._toBeDisplayed['player'].list.forEach(e => e.translation.y = this._physics.pos.y);
       this._physics.pos.y = 0;
       this._firstJump = false;
     }
@@ -232,25 +234,27 @@ class GameObject {
         });
       }
       if (key === 'player')
-        value.list[0].translation.x = this._physics.pos.x;
+        value.list.forEach(e => e.translation.x = this._physics.pos.x);
     });
     this._toBeDisplayed['trays'].list.forEach((e, i) => {
       // if (i === 0) {
-      const player = this._toBeDisplayed['player'].list[0];
-      // console.log('\n[player] realPos');
-      // console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
-      // console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
-      // console.log(`translation.y: ${player._translation.y}`);
-      // console.log('[tray] realPos');
-      // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
-      // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
-      // console.log('\n');
-      if (this._physics.velocity.y > 0.0
-        && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
-        && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._length.y - 10)) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
-        this.jump();
-      }
+      this._toBeDisplayed['player'].list.forEach(player => {
+        // console.log('\n[player] realPos');
+        // console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
+        // console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
+        // console.log(`translation.y: ${player._translation.y}`);
+        // console.log('[tray] realPos');
+        // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
+        // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
+        // console.log('\n');
+        if (this._physics.velocity.y > 0.0
+          && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
+          && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._length.y - 10)) {
+          console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
+          this.jump();
+          return ;
+        }
+      });
       // }
     });
   }

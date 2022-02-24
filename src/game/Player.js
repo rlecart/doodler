@@ -1,12 +1,12 @@
 const { SIZE, COLORS } = require("./options/options");
 
 class Player {
-  constructor() {
+  constructor(lastX) {
     this._length = {
       x: 110,
       y: 55,
     };
-    this._x = 0;
+    this._x = lastX ? lastX : 0;
     this._y = this._length.y / 2;
     this._translation = {
       x: 0,
