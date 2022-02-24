@@ -149,7 +149,7 @@ class GameObject {
   jump() {
     // if (this._physics.onGround) {
     console.log('jump');
-    this._physics.momentum = this._physics.pos.y + 100;
+    // this._physics.momentum = this._physics.pos.y + 100;
     this._physics.velocity.y = -27.0;
     this._physics.onGround = false;
     // }
