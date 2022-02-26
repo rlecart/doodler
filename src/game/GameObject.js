@@ -149,7 +149,7 @@ class GameObject {
   jump() {
     // if (this._physics.onGround) {
     console.log('jump');
-    // this._physics.momentum = this._physics.pos.y + 100;
+    this._physics.momentum = this._physics.pos.y + 100;
     this._physics.velocity.y = -27.0;
     this._physics.onGround = false;
     // }
@@ -170,12 +170,12 @@ class GameObject {
       this._move.dir = '';
     else if (this._move.keyPressed['ArrowLeft']) {
       this._move.dir = 'left';
-      if (this._physics.velocity.x - 2.0 < 2.0 && this._physics.velocity.x - 2.0 >= -2.0)
+      if (this._physics.velocity.x < 2.0 && this._physics.velocity.x > -2.0)
         this._physics.velocity.x = -2.0;
     }
     else if (this._move.keyPressed['ArrowRight']) {
       this._move.dir = 'right';
-      if (this._physics.velocity.x + 2.0 > 2.0 && this._physics.velocity.x + 2.0 <= 2.0)
+      if (this._physics.velocity.x <= 2.0 && this._physics.velocity.x > -2.0)
         this._physics.velocity.x = 2.0;
     }
     else
@@ -194,7 +194,7 @@ class GameObject {
     }
     else if (this._move.dir === 'right') {
       // console.log('right', this._physics);
-      if (this._physics.velocity.x <= 20.0)
+      if (this._physics.velocity.x < 20.0)
         this._physics.velocity.x += this._physics.gravity.x;
       this._physics.pos.x += this._physics.velocity.x;
     }

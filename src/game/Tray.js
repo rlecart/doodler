@@ -1,4 +1,5 @@
 const { SIZE, COLORS } = require("./options/options");
+const cam = require('./Camera');
 
 class Tray {
   constructor(x, lastY) {
@@ -32,10 +33,10 @@ class Tray {
 
   get realPos() {
     return ({
-      x: (SIZE.width / 2) + this._x - (this._length.x / 2) - (this._length.y / 2),
-      y: SIZE.height - this._y - this._translation.y - (this._length.y / 2),
-      xMax: (SIZE.width / 2) + this._x + (this._length.x / 2) + (this._length.y / 2),
-      yMax: SIZE.height - this._y - this._translation.y + (this._length.y / 2),
+      x: (SIZE.width / 2) + this._x - (this._length.x / 2) - (this._length.y / 2) + cam.translation.x,
+      y: SIZE.height - this._y - this._translation.y - cam.translation.y - (this._length.y / 2),
+      xMax: (SIZE.width / 2) + this._x + (this._length.x / 2) + (this._length.y / 2) + cam.translation.x,
+      yMax: SIZE.height - this._y - this._translation.y - cam.translation.y + (this._length.y / 2),
     });
   }
 
