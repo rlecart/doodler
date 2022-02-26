@@ -216,13 +216,15 @@ class GameObject {
       // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
       // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
       // console.log('\n');
-      if (this.player.velocity.y > 0.0
-        && (e.realPos.xMax > this.player.realPos.x && e.realPos.x < this.player.realPos.xMax)
-        && (e.realPos.y < this.player.realPos.yMax && e.realPos.yMax > this.player.realPos.y + this.player.length.y - 10)) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
-        this.jump();
-        return;
-      }
+      this._toBeDisplayed['player'].list.forEach((player, i) => {
+        if (this.player.velocity.y > 0.0
+          && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
+          && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player.length.y - 10)) {
+          console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
+          this.jump();
+          return;
+        }
+      });
       // }
     });
   }
