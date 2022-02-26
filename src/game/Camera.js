@@ -1,20 +1,18 @@
-class Camera {
+import Physics from "./Physics";
+import WhoHavePhysics from "./WhoHavePhysics";
+
+class Camera extends WhoHavePhysics {
   constructor() {
-    this._translation = {
-      y: 0,
-      x: 0,
-    };
-  }
-
-  get translation() {
-    return (this._translation);
-  }
-
-  set translation(value) {
-    this._translation = value;
+    super();
+    this._physics = new Physics({
+      gravity: {
+        x: 0.65,
+        y: 0.7,
+      }
+    });
   }
 };
 
 const cam = new Camera();
 
-module.exports = cam;
+export default cam;

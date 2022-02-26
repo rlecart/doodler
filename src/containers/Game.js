@@ -23,6 +23,8 @@ const Game = ({
         if (e.key === 'ArrowLeft'
           || e.key === 'ArrowRight')
           g.current.startMove(e.key);
+        else if (e.key === 'ArrowUp')
+          g.current.moveCamera(e.key);
       }
     });
     window.addEventListener('keyup', e => {
@@ -32,6 +34,8 @@ const Game = ({
         if (e.key === 'ArrowLeft'
           || e.key === 'ArrowRight')
           g.current.stopMove(e.key);
+        else if (e.key === 'ArrowDown')
+          g.current.moveCamera(e.key);
       }
     });
   }, []);

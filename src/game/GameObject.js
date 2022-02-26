@@ -1,7 +1,8 @@
-const { FPS60, SIZE } = require("./options/options");
-const GameElement = require("./GameElement");
-const Tray = require("./Tray");
-const Player = require("./Player");
+import { FPS60, SIZE } from "./options/options";
+import GameElement from "./GameElement";
+import Tray from "./Tray";
+import Player from "./Player";
+import cam from './Camera';
 
 class GameObject {
   constructor() {
@@ -11,27 +12,15 @@ class GameObject {
     this._toBeDisplayed = {};
     this._fps = 0;
     this._framesCounter = 0;
-    this._physics = {
-      pos: {
-        x: 0,
-        y: 0,
-      },
-      velocity: {
-        x: 0.0,
-        y: -27.0,
-      },
-      gravity: {
-        x: 0.65,
-        y: 0.7,
-      },
-      onGround: false,
-      momentum: 175,
-    };
     this._firstJump = true;
     this._move = {
       keyPressed: {},
       dir: '',
     };
+  }
+
+  get player() {
+    return (this._toBeDisplayed['player'].list[0]);
   }
 
   init() {
@@ -42,50 +31,8 @@ class GameObject {
       'trays': new GameElement(Tray),
       'player': new GameElement(Player),
     };
-    this._toBeDisplayed['player'].newOne(0, -SIZE.width);
-    this._toBeDisplayed['player'].newOne(0, SIZE.width);
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
+    this._toBeDisplayed['player'].newOne({ x: -SIZE.width, y: 0 });
+    this._toBeDisplayed['player'].newOne({ x: SIZE.width, y: 0 });
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
@@ -147,11 +94,11 @@ class GameObject {
   }
 
   jump() {
-    // if (this._physics.onGround) {
+    // if (this.player.onGround) {
     console.log('jump');
-    this._physics.momentum = this._physics.pos.y + 100;
-    this._physics.velocity.y = -27.0;
-    this._physics.onGround = false;
+    // this.player.momentum = this.player.pos.y + 100;
+    this.player.velocity.y = -27.0;
+    // this.player.onGround = false;
     // }
   }
 
@@ -170,95 +117,112 @@ class GameObject {
       this._move.dir = '';
     else if (this._move.keyPressed['ArrowLeft']) {
       this._move.dir = 'left';
-      if (this._physics.velocity.x < 2.0 && this._physics.velocity.x > -2.0)
-        this._physics.velocity.x = -2.0;
+      if (this.player.velocity.x < 2.0 && this.player.velocity.x > -2.0)
+        this.player.velocity.x = -2.0;
     }
     else if (this._move.keyPressed['ArrowRight']) {
       this._move.dir = 'right';
-      if (this._physics.velocity.x <= 2.0 && this._physics.velocity.x > -2.0)
-        this._physics.velocity.x = 2.0;
+      if (this.player.velocity.x <= 2.0 && this.player.velocity.x > -2.0)
+        this.player.velocity.x = 2.0;
     }
     else
       this._move.dir = '';
   }
 
+  moveCamera(dir) {
+    console.log('move camera ', dir);
+    if (dir === 'ArrowUp')
+      cam.pos.y += 100;
+    else if (dir === 'ArrowDown')
+      cam.pos.y -= 100;
+  }
+
   update() {
-    this._physics.velocity.y += this._physics.gravity.y;
-    this._physics.pos.y += this._physics.velocity.y;
+    this.player.velocity.y += this.player.gravity.y;
+    this.player.pos.y -= this.player.velocity.y;
+    if (!this._firstJump)
+      cam.pos.y += this.player.velocity.y;
 
     if (this._move.dir === 'left') {
-      // console.log('left', this._physics);
-      if (this._physics.velocity.x > -20.0)
-        this._physics.velocity.x -= this._physics.gravity.x;
-      this._physics.pos.x += this._physics.velocity.x;
+      // console.log('left', cam);
+      if (this.player.velocity.x > -20.0)
+        this.player.velocity.x -= this.player.gravity.x;
+      this.player.pos.x += this.player.velocity.x;
     }
     else if (this._move.dir === 'right') {
-      // console.log('right', this._physics);
-      if (this._physics.velocity.x < 20.0)
-        this._physics.velocity.x += this._physics.gravity.x;
-      this._physics.pos.x += this._physics.velocity.x;
+      // console.log('right', cam);
+      if (this.player.velocity.x < 20.0)
+        this.player.velocity.x += this.player.gravity.x;
+      this.player.pos.x += this.player.velocity.x;
     }
     else if (this._move.dir === '') {
-      if (this._physics.velocity.x < 0) {
-        this._physics.velocity.x += this._physics.gravity.x / 2.5;
-        if (this._physics.velocity.x >= 0)
-          this._physics.velocity.x = 0.0;
+      if (this.player.velocity.x < 0) {
+        this.player.velocity.x += this.player.gravity.x / 2.5;
+        if (this.player.velocity.x >= 0)
+          this.player.velocity.x = 0.0;
       }
-      if (this._physics.velocity.x > 0) {
-        this._physics.velocity.x -= this._physics.gravity.x / 2.5;
-        if (this._physics.velocity.x <= 0)
-          this._physics.velocity.x = 0.0;
+      if (this.player.velocity.x > 0) {
+        this.player.velocity.x -= this.player.gravity.x / 2.5;
+        if (this.player.velocity.x <= 0)
+          this.player.velocity.x = 0.0;
       }
-      this._physics.pos.x += this._physics.velocity.x;
+      this.player.pos.x += this.player.velocity.x;
     }
-    if (this._physics.pos.x > SIZE.width / 2)
-      this._physics.pos.x = -SIZE.width / 2;
-    else if (this._physics.pos.x < -SIZE.width / 2)
-      this._physics.pos.x = SIZE.width / 2;
+    if (this.player.pos.x > SIZE.width / 2)
+      this.player.pos.x = -SIZE.width / 2;
+    else if (this.player.pos.x < -SIZE.width / 2)
+      this.player.pos.x = SIZE.width / 2;
 
-    if (this._physics.velocity.y >= -10.0 && this._firstJump) {
+    if (this._firstJump && this.player.velocity.y >= -10.0) {
       // console.log('couciu');
-      this._toBeDisplayed['player'].list.forEach(e => e.translation.y = this._physics.pos.y);
-      this._physics.pos.y = 0;
+      // this.player.translation.y = this.player.pos.y;
+      // this.player.pos.y = 0.0;
       this._firstJump = false;
     }
-    if (this._physics.pos.y > this._physics.momentum) {
-      // console.log('ground')
-      this._physics.pos.y = this._physics.momentum;
-      this._physics.velocity.y = 0.0;
-      this._physics.onGround = true;
-      this._firstJump = false;
-      // console.log('c cui');
-    }
-    Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
-      // if (key !== 'player') {
-      if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
-        value.list.forEach(e => {
-          e.translation.y = this._physics.pos.y;
-        });
+    // if (this.player.pos.y > this.player.momentum) {
+    // console.log('ground')
+    // this.player.pos.y = this.player.momentum;
+    // this.player.velocity.y = 0.0;
+    // this.player.onGround = true;
+    // this._firstJump = false;
+    // console.log('c cui');
+    // }
+
+
+
+    // Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
+    //   // if (key !== 'player') {
+    //   // if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
+    //   //   value.list.forEach(e => {
+    //   //     e.translation.y = this.player.pos.y;
+    //   //   });
+    //   // }
+    //   if (key === 'player')
+    //     value.list.forEach(e => e.translation.x = this.player.pos.x);
+    // });
+    this._toBeDisplayed['player'].list.forEach((e, i) => {
+      if (i > 0) {
+        e.translation.x = this.player.pos.x;
+        e.translation.y = -this.player.pos.y + this.player.translation.y;
       }
-      if (key === 'player')
-        value.list.forEach(e => e.translation.x = this._physics.pos.x);
     });
     this._toBeDisplayed['trays'].list.forEach((e, i) => {
       // if (i === 0) {
-      this._toBeDisplayed['player'].list.forEach(player => {
-        // console.log('\n[player] realPos');
-        // console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
-        // console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
-        // console.log(`translation.y: ${player._translation.y}`);
-        // console.log('[tray] realPos');
-        // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
-        // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
-        // console.log('\n');
-        if (this._physics.velocity.y > 0.0
-          && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
-          && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player._length.y - 10)) {
-          console.log('aaaaaaaaaaaaaaaaaaaaaaaa');
-          this.jump();
-          return;
-        }
-      });
+      // console.log('\n[player] realPos');
+      // console.log(`x: ${player.realPos.x}, xMax: ${player.realPos.xMax}`);
+      // console.log(`y: ${player.realPos.y}, yMax: ${player.realPos.yMax}`);
+      // console.log(`translation.y: ${player._translation.y}`);
+      // console.log('[tray] realPos');
+      // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
+      // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
+      // console.log('\n');
+      if (this.player.velocity.y > 0.0
+        && (e.realPos.xMax > this.player.realPos.x && e.realPos.x < this.player.realPos.xMax)
+        && (e.realPos.y < this.player.realPos.yMax && e.realPos.yMax > this.player.realPos.y + this.player.length.y - 10)) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
+        this.jump();
+        return;
+      }
       // }
     });
   }
@@ -273,4 +237,4 @@ class GameObject {
   }
 }
 
-module.exports = GameObject;
+export default GameObject;

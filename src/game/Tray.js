@@ -1,55 +1,48 @@
-const { SIZE, COLORS } = require("./options/options");
-const cam = require('./Camera');
+import { SIZE, COLORS } from "./options/options";
+import cam from './Camera';
+import Physics from './Physics';
+import WhoHavePhysics from "./WhoHavePhysics";
 
-class Tray {
+class Tray extends WhoHavePhysics {
   constructor(x, lastY) {
-    if (lastY === undefined)
-      lastY = 0;
-    if (x === undefined)
-      x = 0;
-    this._length = {
-      x: 300,
-      y: 45
-    };
-    this._x = x + this.generateNewRangeX();
-    this._y = lastY + this.generateNewRangeY();
-    this._translation = {
-      y: 0,
-      x: 0,
-    };
-  }
-
-  set translation(value) {
-    this._translation = { ...this._translation, ...value };
-  }
-
-  get translation() {
-    return (this._translation);
-  }
-
-  get y() {
-    return (this._y);
+    super();
+    this._physics = new Physics({
+      length: {
+        x: 300,
+        y: 45,
+      },
+      pos: {
+        x: x,
+        y: lastY,
+      },
+      gravity: {
+        x: 0.65,
+        y: 0.7
+      }
+    });
+    this.pos.x += this.generateNewRangeX();
+    this.pos.y += this.generateNewRangeY();
   }
 
   get realPos() {
     return ({
-      x: (SIZE.width / 2) + this._x - (this._length.x / 2) - (this._length.y / 2) + cam.translation.x,
-      y: SIZE.height - this._y - this._translation.y - cam.translation.y - (this._length.y / 2),
-      xMax: (SIZE.width / 2) + this._x + (this._length.x / 2) + (this._length.y / 2) + cam.translation.x,
-      yMax: SIZE.height - this._y - this._translation.y - cam.translation.y + (this._length.y / 2),
+      x: (SIZE.width / 2) + this.pos.x - (this.length.x / 2) - (this.length.y / 2) + cam.pos.x,
+      y: SIZE.height - this.pos.y - this.translation.y - cam.pos.y - (this.length.y / 2),
+      xMax: (SIZE.width / 2) + this.pos.x + (this.length.x / 2) + (this.length.y / 2) + cam.pos.x,
+      yMax: SIZE.height - this.pos.y - this.translation.y - cam.pos.y + (this.length.y / 2),
     });
   }
 
   generateNewRangeY() {
-    const minimum = this._length.y * 5;
-    const add = Math.floor(Math.random() * this._length.y * 2) + minimum;
+    const minimum = this.length.y * 5;
+    const add = Math.floor(Math.random() * this.length.y * 2) + minimum;
     return (add);
   }
 
   generateNewRangeX() {
     const direction = Math.floor(Math.random() * 2);
     console.log(direction);
-    const add = Math.floor(Math.random() * ((SIZE.width / 2) - ((this._length.x + this._length.y) / 2)));
+    const add = Math.floor(Math.random() * ((SIZE.width / 2) - ((this.length.x + this.length.y) / 2)));
 
     if (direction === 0) {
       return (-add);
@@ -60,17 +53,18 @@ class Tray {
   }
 
   render(canvas, ctx) {
-    const startX = (canvas.width / 2) + this._x - (this._length.x / 2);
-    const startY = canvas.height - this._y - this._translation.y - (this._length.y / 2);
+    const realPos = this.realPos;
+    const startX = realPos.x;
+    const startY = realPos.y;
     ctx.fillStyle = COLORS['trays'];
-    ctx.fillRect(startX, startY, this._length.x, this._length.y);
+    ctx.fillRect(startX + (this.length.y / 2), startY, this.length.x, this.length.y);
     ctx.beginPath();
-    ctx.arc(startX, startY + (this._length.y / 2), this._length.y / 2, 0, 2 * Math.PI, false);
+    ctx.arc(startX + (this.length.y / 2), startY + (this.length.y / 2), this.length.y / 2, 0, 2 * Math.PI, false);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(startX + this._length.x, startY + (this._length.y / 2), this._length.y / 2, 0, 2 * Math.PI, false);
+    ctx.arc(realPos.xMax - (this.length.y / 2), startY + (this.length.y / 2), this.length.y / 2, 0, 2 * Math.PI, false);
     ctx.fill();
   }
 }
 
-module.exports = Tray;
+export default Tray;

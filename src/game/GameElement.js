@@ -9,14 +9,16 @@ class GameElement {
     return (this._list);
   }
 
-  newOne(y, x) {
-    if (y === undefined && this._list.length > 0)
-      y = this._list[this._list.length - 1].y;
-    this._list.push(new this._type(x, y));
+  newOne(pos) {
+    let y = pos ? pos.y : undefined;
+    let x = pos ? pos.x : undefined;
+    if (!pos && this.list.length > 0)
+      y = this.list[this.list.length - 1].pos.y;
+    this.list.push(new this._type(x, y));
   }
 
   render(canvas, ctx) {
-    this._list.forEach(e => e.render(canvas, ctx));
+    this.list.forEach(e => e.render(canvas, ctx));
   }
 }
 
