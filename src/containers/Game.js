@@ -25,6 +25,10 @@ const Game = ({
           g.current.startMove(e.key);
         else if (e.key === 'ArrowUp')
           g.current.moveCamera(e.key);
+        else if (e.key === 'a')
+          g.current.startMove('ArrowLeft');
+        else if (e.key === 'd')
+          g.current.startMove('ArrowRight');
       }
     });
     window.addEventListener('keyup', e => {
@@ -36,6 +40,10 @@ const Game = ({
           g.current.stopMove(e.key);
         else if (e.key === 'ArrowDown')
           g.current.moveCamera(e.key);
+        else if (e.key === 'a')
+          g.current.stopMove('ArrowLeft');
+        else if (e.key === 'd')
+          g.current.stopMove('ArrowRight');
       }
     });
   }, []);
