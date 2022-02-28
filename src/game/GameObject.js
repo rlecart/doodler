@@ -3,6 +3,7 @@ import GameElement from "./GameElement";
 import Tray from "./Tray";
 import Player from "./Player";
 import cam from './Camera';
+import Players from "./Players";
 
 class GameObject {
   constructor() {
@@ -29,10 +30,10 @@ class GameObject {
     this._toBeDisplayed = {
       ...this._toBeDisplayed,
       'trays': new GameElement(Tray),
-      'player': new GameElement(Player),
+      'player': new GameElement(Players),
+      // 'spec': new GameElement(Players),
     };
-    this._toBeDisplayed['player'].newOne({ x: -SIZE.width, y: 0 });
-    this._toBeDisplayed['player'].newOne({ x: SIZE.width, y: 0 });
+    this._toBeDisplayed['player'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();
     this._toBeDisplayed['trays'].newOne();

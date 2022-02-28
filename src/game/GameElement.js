@@ -2,7 +2,6 @@ class GameElement {
   constructor(type) {
     this._type = type;
     this._list = [];
-    this.newOne();
   }
 
   get list() {
@@ -22,4 +21,4 @@ class GameElement {
   }
 }
 
-module.exports = GameElement;
+export default GameElement;
