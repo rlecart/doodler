@@ -21,7 +21,7 @@ class GameObject {
   }
 
   get player() {
-    return (this._toBeDisplayed['player'].list[0]);
+    return (this._toBeDisplayed['player'].list[0].list[0]);
   }
 
   init() {
@@ -139,6 +139,7 @@ class GameObject {
   }
 
   update() {
+    console.log(this.player)
     this.player.velocity.y += this.player.gravity.y;
     this.player.pos.y -= this.player.velocity.y;
     if (!this._firstJump)
@@ -217,7 +218,7 @@ class GameObject {
       // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
       // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
       // console.log('\n');
-      this._toBeDisplayed['player'].list.forEach((player, i) => {
+      this._toBeDisplayed['player'].list[0].list.forEach((player, i) => {
         if (this.player.velocity.y > 0.0
           && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
           && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player.length.y - 10)) {

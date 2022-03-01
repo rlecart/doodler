@@ -13,7 +13,7 @@ class Players {
   }
 
   get list() {
-    return (this._list[0]);
+    return (this._list);
   }
 
   render(canvas, ctx) {
