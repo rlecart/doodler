@@ -202,7 +202,7 @@ class GameObject {
     //   if (key === 'player')
     //     value.list.forEach(e => e.translation.x = this.player.pos.x);
     // });
-    this._toBeDisplayed['player'].list.forEach((e, i) => {
+    this._toBeDisplayed['player'].list[0].list.forEach((e, i) => {
       if (i > 0) {
         e.translation.x = this.player.pos.x;
         e.translation.y = -this.player.pos.y + this.player.translation.y;
