@@ -25,7 +25,40 @@ class Player extends WhoHavePhysics {
         y: -27.0,
       },
     });
-    // this.pos.y = this.length.y / 2;
+  }
+
+  get left() {
+    const realPos = this.realPos;
+
+    return ({
+      pos: {
+        x: this.x - SIZE.width,
+        y: this.y,
+      },
+      realPos: {
+        x: realPos.x - SIZE.width,
+        y: realPos.y,
+        xMax: realPos.xMax - SIZE.width,
+        yMax: realPos.yMax,
+      }
+    });
+  }
+
+  get right() {
+    const realPos = this.realPos;
+
+    return ({
+      pos: {
+        x: this.x + SIZE.width,
+        y: this.y,
+      },
+      realPos: {
+        x: realPos.x + SIZE.width,
+        y: realPos.y,
+        xMax: realPos.xMax + SIZE.width,
+        yMax: realPos.yMax,
+      }
+    });
   }
 
   get realPos() {
@@ -41,14 +74,23 @@ class Player extends WhoHavePhysics {
     const realPos = this.realPos;
     const startX = realPos.x;
     const startY = realPos.y;
-    console.log('coucou');
-    // const startX = (canvas.width / 2) + (e.pos.x + this.translation.x) - (this.length.x / 2);
-    // const startY = canvas.height - (e.pos.y - this.translation.y) - (this.length.y / 2);
+    const left = this.left;
+    const right = this.right;
     ctx.fillStyle = COLORS['player'];
+
     ctx.fillRect(startX, startY, this.length.x, this.length.y);
-    // ctx.fillRect(startX, startY, this.length.x, this.length.y);
     ctx.beginPath();
     ctx.arc(startX + (this.length.x / 2), startY, this.length.x / 2, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.fillRect(left.x, left.y, this.length.x, this.length.y);
+    ctx.beginPath();
+    ctx.arc(left.x + (this.length.x / 2), left.y, this.length.x / 2, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.fillRect(right.x, right.y, this.length.x, this.length.y);
+    ctx.beginPath();
+    ctx.arc(right.x + (this.length.x / 2), right.y, this.length.x / 2, 0, 2 * Math.PI, false);
     ctx.fill();
   }
 }

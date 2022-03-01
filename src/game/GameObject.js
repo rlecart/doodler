@@ -21,7 +21,7 @@ class GameObject {
   }
 
   get player() {
-    return (this._toBeDisplayed['player'].list[0].list[0]);
+    return (this._toBeDisplayed['player'].list[0]);
   }
 
   init() {
@@ -30,7 +30,7 @@ class GameObject {
     this._toBeDisplayed = {
       ...this._toBeDisplayed,
       'trays': new GameElement(Tray),
-      'player': new GameElement(Players),
+      'player': new GameElement(Player),
       // 'spec': new GameElement(Players),
     };
     this._toBeDisplayed['player'].newOne();
@@ -139,7 +139,7 @@ class GameObject {
   }
 
   update() {
-    console.log(this.player)
+    console.log(this.player);
     this.player.velocity.y += this.player.gravity.y;
     this.player.pos.y -= this.player.velocity.y;
     if (!this._firstJump)
@@ -181,14 +181,14 @@ class GameObject {
       // this.player.pos.y = 0.0;
       this._firstJump = false;
     }
-    // if (this.player.pos.y > this.player.momentum) {
-    // console.log('ground')
-    // this.player.pos.y = this.player.momentum;
-    // this.player.velocity.y = 0.0;
-    // this.player.onGround = true;
-    // this._firstJump = false;
-    // console.log('c cui');
-    // }
+    if (this.player.pos.y <= 0) {
+      console.log('ground');
+      this.player.pos.y = 0.0;
+      this.player.velocity.y = 0.0;
+      this.player.onGround = true;
+      this._firstJump = true;
+      console.log('c cui');
+    }
 
 
 
@@ -202,7 +202,7 @@ class GameObject {
     //   if (key === 'player')
     //     value.list.forEach(e => e.translation.x = this.player.pos.x);
     // });
-    this._toBeDisplayed['player'].list[0].list.forEach((e, i) => {
+    this._toBeDisplayed['player'].list.forEach((e, i) => {
       if (i > 0) {
         e.translation.x = this.player.pos.x;
         e.translation.y = -this.player.pos.y + this.player.translation.y;
@@ -218,7 +218,7 @@ class GameObject {
       // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
       // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
       // console.log('\n');
-      this._toBeDisplayed['player'].list[0].list.forEach((player, i) => {
+      this._toBeDisplayed['player'].list.forEach((player, i) => {
         if (this.player.velocity.y > 0.0
           && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
           && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player.length.y - 10)) {
