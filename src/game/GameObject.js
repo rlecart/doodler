@@ -202,12 +202,12 @@ class GameObject {
     //   if (key === 'player')
     //     value.list.forEach(e => e.translation.x = this.player.pos.x);
     // });
-    this._toBeDisplayed['player'].list.forEach((e, i) => {
-      if (i > 0) {
-        e.translation.x = this.player.pos.x;
-        e.translation.y = -this.player.pos.y + this.player.translation.y;
-      }
-    });
+    // this._toBeDisplayed['player'].list.forEach((e, i) => {
+    //   if (i > 0) {
+    //     e.translation.x = this.player.pos.x;
+    //     e.translation.y = -this.player.pos.y + this.player.translation.y;
+    //   }
+    // });
     this._toBeDisplayed['trays'].list.forEach((e, i) => {
       // if (i === 0) {
       // console.log('\n[player] realPos');
@@ -218,17 +218,18 @@ class GameObject {
       // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
       // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
       // console.log('\n');
-      this._toBeDisplayed['player'].list.forEach((player, i) => {
-        if (this.player.velocity.y > 0.0
-          && (e.realPos.xMax > player.realPos.x && e.realPos.x < player.realPos.xMax)
-          && (e.realPos.y < player.realPos.yMax && e.realPos.yMax > player.realPos.y + player.length.y - 10)) {
-          console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
-          this.jump();
-          return;
-        }
-      });
-      // }
+      if (this.player.velocity.y > 0.0
+
+        && ((e.realPos.xMax > this.player.realPos.x && e.realPos.x < this.player.realPos.xMax)
+          || (e.realPos.xMax > this.player.left.realPos.x && e.realPos.x < this.player.left.realPos.xMax)
+          || (e.realPos.xMax > this.player.right.realPos.x && e.realPos.x < this.player.right.realPos.xMax))
+
+        && (e.realPos.y < this.player.realPos.yMax && e.realPos.yMax > this.player.realPos.y + this.player.length.y - 10)) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
+        this.jump();
+      }
     });
+    // }
   }
 
   render() {

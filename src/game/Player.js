@@ -31,10 +31,8 @@ class Player extends WhoHavePhysics {
     const realPos = this.realPos;
 
     return ({
-      pos: {
-        x: this.x - SIZE.width,
-        y: this.y,
-      },
+      x: this.x - SIZE.width,
+      y: this.y,
       realPos: {
         x: realPos.x - SIZE.width,
         y: realPos.y,
@@ -48,10 +46,8 @@ class Player extends WhoHavePhysics {
     const realPos = this.realPos;
 
     return ({
-      pos: {
-        x: this.x + SIZE.width,
-        y: this.y,
-      },
+      x: this.x + SIZE.width,
+      y: this.y,
       realPos: {
         x: realPos.x + SIZE.width,
         y: realPos.y,
@@ -83,14 +79,14 @@ class Player extends WhoHavePhysics {
     ctx.arc(startX + (this.length.x / 2), startY, this.length.x / 2, 0, 2 * Math.PI, false);
     ctx.fill();
 
-    ctx.fillRect(left.x, left.y, this.length.x, this.length.y);
+    ctx.fillRect(left.realPos.x, left.realPos.y, this.length.x, this.length.y);
     ctx.beginPath();
-    ctx.arc(left.x + (this.length.x / 2), left.y, this.length.x / 2, 0, 2 * Math.PI, false);
+    ctx.arc(left.realPos.x + (this.length.x / 2), left.realPos.y, this.length.x / 2, 0, 2 * Math.PI, false);
     ctx.fill();
 
-    ctx.fillRect(right.x, right.y, this.length.x, this.length.y);
+    ctx.fillRect(right.realPos.x, right.realPos.y, this.length.x, this.length.y);
     ctx.beginPath();
-    ctx.arc(right.x + (this.length.x / 2), right.y, this.length.x / 2, 0, 2 * Math.PI, false);
+    ctx.arc(right.realPos.x + (this.length.x / 2), right.realPos.y, this.length.x / 2, 0, 2 * Math.PI, false);
     ctx.fill();
   }
 }
