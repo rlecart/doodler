@@ -1,27 +1,58 @@
 import React, { Fragment } from 'react';
-import { Col, Row } from 'reactstrap';
 import '../style/App.css';
 import '../style/ft_css/ft_css.css';
-import Display from './Display';
+import Display from '../components/Display';
 import { io } from "socket.io-client";
+import { connect } from 'react-redux';
 
-const App = ({ }) => {
-  const socket = React.useRef();
+import { addSocket } from '../actions/socketAction';
+import options from '../options';
+import Game from './Game';
+import ScoreBoard from './ScoreBoard';
+
+const App = ({
+  dispatch,
+  socketReducer,
+}) => {
+  const [score, setScore] = React.useState(0);
+  const [isInGame, setInGame] = React.useState(false);
+  const [socketConnected, setConnected] = React.useState(false);
 
   React.useEffect(() => {
-    socket.current = io("http://localhost:8000");
-    socket.current.on('connection', () => {
-      console.log('connected')
-    })
+    let socket;
+
+    if (!socketReducer.socket) {
+      socket = io(`http://${options.back.path}:${options.back.port}`);
+      socket.on('connection', () => {
+        console.log('connected');
+        setConnected(true);
+      });
+      addSocket(dispatch, socket);
+    }
   }, []);
 
   return (
     <Fragment>
-      <div className='screen'>
-        <Display />
-      </div>
+      <Display>
+        <Game
+          setScore={setScore}
+          isInGame={isInGame}
+          setInGame={setInGame}
+          socketConnected={socketConnected}
+        />
+        <ScoreBoard
+          score={score}
+          isInGame={isInGame}
+          setInGame={setInGame}
+          socketConnected={socketConnected}
+        />
+      </Display>
     </Fragment>
   );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  return (state);
+};
+
+export default connect(mapStateToProps)(App);

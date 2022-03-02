@@ -5,9 +5,21 @@ import App from './containers/App';
 import reportWebVitals from './misc/reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import { Provider } from 'react-redux';
+import { combineReducers } from 'redux';
+
+import socketReducer from './reducers/socketReducer.js';
+import configureStore from './middleware/configureStore.js';
+
+const Store = configureStore(combineReducers({
+  socketReducer,
+}, undefined, {}));
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={Store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

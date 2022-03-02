@@ -10,6 +10,12 @@ class Pos {
   get y() {
     return (this._y);
   }
+  get formatted() {
+    return ({
+      x: this.x,
+      y: this.y,
+    });
+  }
 
   set x(value) {
     this._x = value;

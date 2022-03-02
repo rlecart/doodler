@@ -1,12 +1,14 @@
-import { FPS60, SIZE } from "./options/options";
+import { COLORS, FPS60, SIZE } from "./options/options";
 import GameElement from "./GameElement";
 import Tray from "./Tray";
 import Player from "./Player";
 import cam from './Camera';
 import Players from "./Players";
+import Spec from "./Spec";
 
 class GameObject {
   constructor() {
+    this._socket = undefined;
     this._canvas = undefined;
     this._ctx = undefined;
     this._interval = undefined;
@@ -21,7 +23,17 @@ class GameObject {
   }
 
   get player() {
-    return (this._toBeDisplayed['player'].list[0]);
+    return (this._toBeDisplayed['players'].list[0]);
+  }
+  get specs() {
+    return (this._toBeDisplayed['specs']);
+  }
+  get socket() {
+    return (this._socket);
+  }
+
+  set socket(value) {
+    this._socket = value;
   }
 
   init() {
@@ -30,49 +42,16 @@ class GameObject {
     this._toBeDisplayed = {
       ...this._toBeDisplayed,
       'trays': new GameElement(Tray),
-      'player': new GameElement(Player),
+      'players': new GameElement(Player),
+      'specs': new GameElement(Spec),
       // 'spec': new GameElement(Players),
     };
-    this._toBeDisplayed['player'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-    this._toBeDisplayed['trays'].newOne();
-  }
-
-  start() {
-    this.init();
-    this.startInterval();
+    this._toBeDisplayed['players'].newOne();
+    this._toBeDisplayed['players'].newOne();
+    for (let i = 0; i < 50; i++)
+      this._toBeDisplayed['trays'].newOne();
+    this.jump();
+    this.loop();
   }
 
   stop() {
@@ -81,17 +60,41 @@ class GameObject {
 
   loop() {
     this.update();
+    this.sendMyPos();
     this.render();
     // console.log('interval render', this._framesCounter);
   }
 
-  startInterval() {
+  sendMyPos() {
+    if (this.socket && this.socket.connected)
+      this.socket.emit('refreshMyPos', 'niquetamere', {
+        pos: this.player.pos.formatted,
+        id: this.socket.id,
+        color: COLORS['players'],
+      }, this.refreshSpecs);
+  }
+
+  refreshSpecs(specs) {
+    specs.forEach((e, i) => {
+      if (this.specs.listObj[e.id]) {
+        const spec = this.specs.listObj[e.id];
+        spec.pos.x = e.pos.x;
+        spec.pos.y = e.pos.y;
+        spec.pos.color = e.color;
+      }
+      else {
+        this.specs.listObj[e.id] = new Spec(e);
+      }
+    });
+  }
+
+  start() {
     this._interval = setInterval(() => this.loop(), FPS60);
   }
 
-  resetInterval() {
+  reset() {
     clearInterval(this._interval);
-    this.startInterval();
+    this.start();
   }
 
   jump() {
@@ -193,16 +196,16 @@ class GameObject {
 
 
     // Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
-    //   // if (key !== 'player') {
-    //   // if ((this._firstJump && key === 'player') || (!this._firstJump && key !== 'player')) {
+    //   // if (key !== 'players') {
+    //   // if ((this._firstJump && key === 'players') || (!this._firstJump && key !== 'players')) {
     //   //   value.list.forEach(e => {
     //   //     e.translation.y = this.player.pos.y;
     //   //   });
     //   // }
-    //   if (key === 'player')
+    //   if (key === 'players')
     //     value.list.forEach(e => e.translation.x = this.player.pos.x);
     // });
-    // this._toBeDisplayed['player'].list.forEach((e, i) => {
+    // this._toBeDisplayed['players'].list.forEach((e, i) => {
     //   if (i > 0) {
     //     e.translation.x = this.player.pos.x;
     //     e.translation.y = -this.player.pos.y + this.player.translation.y;
@@ -225,7 +228,7 @@ class GameObject {
           || (e.realPos.xMax > this.player.right.realPos.x && e.realPos.x < this.player.right.realPos.xMax))
 
         && (e.realPos.y < this.player.realPos.yMax && e.realPos.yMax > this.player.realPos.y + this.player.length.y - 10)) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['player']);
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['players']);
         this.jump();
       }
     });

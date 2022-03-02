@@ -20,10 +20,6 @@ class Player extends WhoHavePhysics {
         x: 0.65,
         y: 0.7,
       },
-      velocity: {
-        x: 0.0,
-        y: -27.0,
-      },
     });
   }
 

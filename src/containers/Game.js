@@ -5,9 +5,12 @@ import GameObject from '../game/GameObject';
 import { SIZE } from '../game/options/options';
 
 const Game = ({
+  dispatch,
+  socketReducer,
   setScore,
   isInGame,
   setInGame,
+  socketConnected,
 }) => {
   const g = React.useRef();
   const isPressed = React.useRef({});
@@ -51,12 +54,15 @@ const Game = ({
   React.useEffect(() => {
     console.log('yo');
     if (isInGame)
-      g.current.startInterval();
-    else {
+      g.current.start();
+    else
       g.current.init();
-      g.current.loop();
-    }
   }, [isInGame]);
+
+  React.useEffect(() => {
+    if (socketConnected && socketReducer && socketReducer.socket && g.current)
+      g.current.socket = socketReducer.socket;
+  }, [socketConnected]);
 
   return (
     <canvas className='game' width={SIZE.width} height={SIZE.height}>
