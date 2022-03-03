@@ -1,6 +1,7 @@
 import '../style/Game.css';
 import { Col } from "reactstrap";
 import React from 'react';
+import { connect } from 'react-redux';
 import GameObject from '../game/GameObject';
 import { SIZE } from '../game/options/options';
 
@@ -60,8 +61,9 @@ const Game = ({
   }, [isInGame]);
 
   React.useEffect(() => {
-    if (socketConnected && socketReducer && socketReducer.socket && g.current)
+    if (socketConnected && socketReducer && socketReducer.socket && g.current) {
       g.current.socket = socketReducer.socket;
+    }
   }, [socketConnected]);
 
   return (
@@ -70,4 +72,8 @@ const Game = ({
   );
 };
 
-export default Game;
+const mapStateToProps = (state) => {
+  return (state);
+};
+
+export default connect(mapStateToProps)(Game);

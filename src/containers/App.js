@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import '../style/App.css';
 import '../style/ft_css/ft_css.css';
 import Display from '../components/Display';
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 import { connect } from 'react-redux';
 
 import { addSocket } from '../actions/socketAction';
@@ -22,9 +22,10 @@ const App = ({
     let socket;
 
     if (!socketReducer.socket) {
+      console.log('yo');
       socket = io(`http://${options.back.path}:${options.back.port}`);
-      socket.on('connection', () => {
-        console.log('connected');
+      socket.on('connect', () => {
+        console.log('socket connected');
         setConnected(true);
       });
       addSocket(dispatch, socket);

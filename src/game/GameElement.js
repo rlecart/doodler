@@ -15,7 +15,7 @@ class GameElement {
   }
 
   set listObj(value) {
-    this._listObj = { ...this.listObj, ...value };
+    this._listObj = value
   }
 
   newOne(pos) {
@@ -29,7 +29,7 @@ class GameElement {
   render(canvas, ctx) {
     if (this.list.length > 0)
       this.list.forEach(e => e.render(canvas, ctx));
-    else if (objLen(this.listObj))
+    else if (objLen(this.listObj) > 0)
       Object.values(this.listObj).forEach(e => e.render(canvas, ctx));
   }
 }

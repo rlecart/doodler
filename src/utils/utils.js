@@ -1,5 +1,8 @@
 const objLen = (obj) => {
-  return (Object.keys(obj).length);
+  if (obj)
+    return (Object.keys(obj).length);
+  else
+    return (undefined);
 };
 
 export {

@@ -5,6 +5,7 @@ import Player from "./Player";
 import cam from './Camera';
 import Players from "./Players";
 import Spec from "./Spec";
+import { objLen } from "../utils/utils";
 
 class GameObject {
   constructor() {
@@ -66,24 +67,32 @@ class GameObject {
   }
 
   sendMyPos() {
-    if (this.socket && this.socket.connected)
+    if (this.socket && this.socket.connected) {
+      console.log('ca refresh');
       this.socket.emit('refreshMyPos', 'niquetamere', {
         pos: this.player.pos.formatted,
         id: this.socket.id,
         color: COLORS['players'],
-      }, this.refreshSpecs);
+      }, (specs) => this.refreshSpecs(specs));
+    }
   }
 
   refreshSpecs(specs) {
+    console.log('ah bah la ca cb', specs);
+    console.log('list', this.specs);
+    console.log('list2', this.specs.listObj);
     specs.forEach((e, i) => {
-      if (this.specs.listObj[e.id]) {
+      console.log('aaaaaaaaaaaaaa ', e);
+      console.log('qwf', objLen(this.specs.listObj));
+      console.log('qqqfwq', this.specs.listObj[e.id]);
+      if (objLen(this.specs.listObj) > 0 && this.specs.listObj[e.id]) {
         const spec = this.specs.listObj[e.id];
         spec.pos.x = e.pos.x;
         spec.pos.y = e.pos.y;
-        spec.pos.color = e.color;
+        // spec.color = e.color;
       }
       else {
-        this.specs.listObj[e.id] = new Spec(e);
+        this.specs.listObj = { ...this.specs.listObj, [e.id]: new Spec(e) };
       }
     });
   }
