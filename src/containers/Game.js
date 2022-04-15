@@ -21,39 +21,41 @@ const Game = ({
     window.addEventListener('keydown', e => {
       if (!isPressed.current[e.key]) {
         isPressed.current = { ...isPressed.current, [e.key]: true };
-        console.log(e.key);
+        // console.log(e.key);
         if (e.key === ' ')
-          g.current.jump();
+          g.current.player.jump();
         if (e.key === 'ArrowLeft'
           || e.key === 'ArrowRight')
-          g.current.startMove(e.key);
+          g.current.player.startMove(e.key);
         else if (e.key === 'ArrowUp')
           g.current.moveCamera(e.key);
         else if (e.key === 'a')
-          g.current.startMove('ArrowLeft');
+          g.current.player.startMove('ArrowLeft');
         else if (e.key === 'd')
-          g.current.startMove('ArrowRight');
+          g.current.player.startMove('ArrowRight');
+        else if (e.key === 'p')
+          g.current.printThis();
       }
     });
     window.addEventListener('keyup', e => {
       if (isPressed.current[e.key]) {
         isPressed.current = { ...isPressed.current, [e.key]: false };
-        console.log('aaaaa', e.key);
+        // console.log('aaaaa', e.key);
         if (e.key === 'ArrowLeft'
           || e.key === 'ArrowRight')
-          g.current.stopMove(e.key);
+          g.current.player.stopMove(e.key);
         else if (e.key === 'ArrowDown')
           g.current.moveCamera(e.key);
         else if (e.key === 'a')
-          g.current.stopMove('ArrowLeft');
+          g.current.player.stopMove('ArrowLeft');
         else if (e.key === 'd')
-          g.current.stopMove('ArrowRight');
+          g.current.player.stopMove('ArrowRight');
       }
     });
   }, []);
 
   React.useEffect(() => {
-    console.log('yo');
+    // console.log('yo');
     if (isInGame)
       g.current.start();
     else

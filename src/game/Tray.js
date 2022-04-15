@@ -8,8 +8,8 @@ class Tray extends WhoHavePhysics {
     super();
     this._physics = new Physics({
       length: {
-        x: 300,
-        y: 45,
+        x: SIZE.tray.x,
+        y: SIZE.tray.y,
       },
       pos: {
         x: x,

@@ -5,7 +5,8 @@ import Player from "./Player";
 import cam from './Camera';
 import Players from "./Players";
 import Spec from "./Spec";
-import { objLen } from "../utils/utils";
+import { generateId, objLen } from "../utils/utils";
+import Bot from "./Bot";
 
 class GameObject {
   constructor() {
@@ -17,10 +18,6 @@ class GameObject {
     this._fps = 0;
     this._framesCounter = 0;
     this._firstJump = true;
-    this._move = {
-      keyPressed: {},
-      dir: '',
-    };
   }
 
   get player() {
@@ -28,6 +25,9 @@ class GameObject {
   }
   get specs() {
     return (this._toBeDisplayed['specs']);
+  }
+  get bots() {
+    return (this._toBeDisplayed['bots']);
   }
   get socket() {
     return (this._socket);
@@ -37,21 +37,33 @@ class GameObject {
     this._socket = value;
   }
 
+  printThis() {
+    console.log(this);
+  }
+
   init() {
     this._canvas = document.querySelector('canvas');
     this._ctx = this._canvas.getContext('2d');
     this._toBeDisplayed = {
       ...this._toBeDisplayed,
       'trays': new GameElement(Tray),
-      'players': new GameElement(Player),
+      'bots': new GameElement(Bot),
       'specs': new GameElement(Spec),
+      'players': new GameElement(Player),
       // 'spec': new GameElement(Players),
     };
     this._toBeDisplayed['players'].newOne();
-    this._toBeDisplayed['players'].newOne();
     for (let i = 0; i < 50; i++)
       this._toBeDisplayed['trays'].newOne();
-    this.jump();
+    // console.log(this._toBeDisplayed['bots']);
+    // for (let i = 0; i < 10; i++)
+    //   this._toBeDisplayed['bots'].newOne({ x: 0.0, y: 0.0 });
+    this.createSomeBots(400);
+    // console.log(this._toBeDisplayed['bots']);
+    this.player.jump();
+    for (let bot of Object.values(this.bots.listObj)) {
+      bot.jump();
+    }
     this.loop();
   }
 
@@ -68,7 +80,7 @@ class GameObject {
 
   sendMyPos() {
     if (this.socket && this.socket.connected) {
-      console.log('ca refresh');
+      // console.log('ca refresh');
       this.socket.emit('refreshMyPos', 'niquetamere', {
         pos: this.player.pos.formatted,
         id: this.socket.id,
@@ -77,21 +89,25 @@ class GameObject {
     }
   }
 
+  createSomeBots(nb) {
+    for (let i = 0; i < nb; i++) {
+      let id;
+      do {
+        id = generateId();
+      } while (this.bots[id]);
+      this.bots.listObj = { ...this.bots.listObj, [id]: new Bot(id) };
+    }
+  }
+
   refreshSpecs(specs) {
-    console.log('ah bah la ca cb', specs);
-    console.log('list', this.specs);
-    console.log('list2', this.specs.listObj);
     specs.forEach((e, i) => {
-      console.log('aaaaaaaaaaaaaa ', e);
-      console.log('qwf', objLen(this.specs.listObj));
-      console.log('qqqfwq', this.specs.listObj[e.id]);
-      if (objLen(this.specs.listObj) > 0 && this.specs.listObj[e.id]) {
+      if (e.id !== this.socket.id && objLen(this.specs.listObj) > 0 && this.specs.listObj[e.id]) {
         const spec = this.specs.listObj[e.id];
         spec.pos.x = e.pos.x;
         spec.pos.y = e.pos.y;
         // spec.color = e.color;
       }
-      else {
+      else if (e.id !== this.socket.id) {
         this.specs.listObj = { ...this.specs.listObj, [e.id]: new Spec(e) };
       }
     });
@@ -106,44 +122,17 @@ class GameObject {
     this.start();
   }
 
-  jump() {
-    // if (this.player.onGround) {
-    console.log('jump');
-    // this.player.momentum = this.player.pos.y + 100;
-    this.player.velocity.y = -27.0;
-    // this.player.onGround = false;
-    // }
-  }
-
-  startMove(key) {
-    this._move.keyPressed = { ...this._move.keyPressed, [key]: true };
-    this.changeDir();
-  }
-
-  stopMove(key) {
-    this._move.keyPressed = { ...this._move.keyPressed, [key]: false };
-    this.changeDir();
-  }
-
-  changeDir() {
-    if (this._move.keyPressed['ArrowLeft'] && this._move.keyPressed['ArrowRight'])
-      this._move.dir = '';
-    else if (this._move.keyPressed['ArrowLeft']) {
-      this._move.dir = 'left';
-      if (this.player.velocity.x < 2.0 && this.player.velocity.x > -2.0)
-        this.player.velocity.x = -2.0;
-    }
-    else if (this._move.keyPressed['ArrowRight']) {
-      this._move.dir = 'right';
-      if (this.player.velocity.x <= 2.0 && this.player.velocity.x > -2.0)
-        this.player.velocity.x = 2.0;
-    }
-    else
-      this._move.dir = '';
-  }
+  // jump() {
+  //   // if (this.player.onGround) {
+  //   console.log('jump');
+  //   // this.player.momentum = this.player.pos.y + 100;
+  //   this.player.velocity.y = -27.0;
+  //   // this.player.onGround = false;
+  //   // }
+  // }
 
   moveCamera(dir) {
-    console.log('move camera ', dir);
+    // console.log('move camera ', dir);
     if (dir === 'ArrowUp')
       cam.pos.y += 100;
     else if (dir === 'ArrowDown')
@@ -151,58 +140,11 @@ class GameObject {
   }
 
   update() {
-    console.log(this.player);
-    this.player.velocity.y += this.player.gravity.y;
-    this.player.pos.y -= this.player.velocity.y;
-    if (!this._firstJump)
-      cam.pos.y += this.player.velocity.y;
-
-    if (this._move.dir === 'left') {
-      // console.log('left', cam);
-      if (this.player.velocity.x > -20.0)
-        this.player.velocity.x -= this.player.gravity.x;
-      this.player.pos.x += this.player.velocity.x;
+    // update player etc
+    this.player.update();
+    for (let bot of Object.values(this._toBeDisplayed['bots'].listObj)) {
+      bot.update();
     }
-    else if (this._move.dir === 'right') {
-      // console.log('right', cam);
-      if (this.player.velocity.x < 20.0)
-        this.player.velocity.x += this.player.gravity.x;
-      this.player.pos.x += this.player.velocity.x;
-    }
-    else if (this._move.dir === '') {
-      if (this.player.velocity.x < 0) {
-        this.player.velocity.x += this.player.gravity.x / 2.5;
-        if (this.player.velocity.x >= 0)
-          this.player.velocity.x = 0.0;
-      }
-      if (this.player.velocity.x > 0) {
-        this.player.velocity.x -= this.player.gravity.x / 2.5;
-        if (this.player.velocity.x <= 0)
-          this.player.velocity.x = 0.0;
-      }
-      this.player.pos.x += this.player.velocity.x;
-    }
-    if (this.player.pos.x > SIZE.width / 2)
-      this.player.pos.x = -SIZE.width / 2;
-    else if (this.player.pos.x < -SIZE.width / 2)
-      this.player.pos.x = SIZE.width / 2;
-
-    if (this._firstJump && this.player.velocity.y >= -10.0) {
-      // console.log('couciu');
-      // this.player.translation.y = this.player.pos.y;
-      // this.player.pos.y = 0.0;
-      this._firstJump = false;
-    }
-    if (this.player.pos.y <= 0) {
-      console.log('ground');
-      this.player.pos.y = 0.0;
-      this.player.velocity.y = 0.0;
-      this.player.onGround = true;
-      this._firstJump = true;
-      console.log('c cui');
-    }
-
-
 
     // Object.entries(this._toBeDisplayed).forEach(([key, value]) => {
     //   // if (key !== 'players') {
@@ -230,15 +172,10 @@ class GameObject {
       // console.log(`x: ${e.realPos.x}, xMax: ${e.realPos.xMax}`);
       // console.log(`y: ${e.realPos.y}, yMax: ${e.realPos.yMax}`);
       // console.log('\n');
-      if (this.player.velocity.y > 0.0
-
-        && ((e.realPos.xMax > this.player.realPos.x && e.realPos.x < this.player.realPos.xMax)
-          || (e.realPos.xMax > this.player.left.realPos.x && e.realPos.x < this.player.left.realPos.xMax)
-          || (e.realPos.xMax > this.player.right.realPos.x && e.realPos.x < this.player.right.realPos.xMax))
-
-        && (e.realPos.y < this.player.realPos.yMax && e.realPos.yMax > this.player.realPos.y + this.player.length.y - 10)) {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaa', this._toBeDisplayed['players']);
-        this.jump();
+      this.player.doesItCollide(e);
+      for (let bot of Object.values(this._toBeDisplayed['bots'].listObj)) {
+        bot.updateNearestTray(e.pos);
+        bot.doesItCollide(e);
       }
     });
     // }

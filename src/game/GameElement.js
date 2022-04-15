@@ -15,7 +15,7 @@ class GameElement {
   }
 
   set listObj(value) {
-    this._listObj = value
+    this._listObj = value;
   }
 
   newOne(pos) {
